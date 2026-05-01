@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>토스 송금</title>
+<style>
+  body { font-family: system-ui, -apple-system, sans-serif; padding: 40px 20px; text-align: center; background: #f5f5f5; }
+  .card { background: white; border-radius: 12px; padding: 40px 20px; max-width: 400px; margin: 0 auto; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  h1 { color: #0064ff; margin-bottom: 8px; }
+  p { color: #666; }
+  .info { background: #f0f4ff; padding: 16px; border-radius: 8px; margin: 20px 0; text-align: left; }
+  .info div { margin: 4px 0; }
+  .label { color: #999; font-size: 0.9em; }
+  .value { font-weight: 600; }
+  button { background: #0064ff; color: white; border: none; padding: 14px 28px; border-radius: 8px; font-size: 16px; cursor: pointer; }
+</style>
+</head>
+<body>
+<div class="card">
+<h1>💸 토스 송금</h1>
+<p id="status">토스 앱으로 이동 중...</p>
+<div class="info" id="info" style="display:none">
+  <div><span class="label">은행:</span> <span class="value" id="bank-display"></span></div>
+  <div><span class="label">계좌:</span> <span class="value" id="account-display"></span></div>
+  <div><span class="label">금액:</span> <span class="value" id="amount-display"></span>원</div>
+</div>
+<button onclick="redirect()" id="btn" style="display:none">토스 앱 다시 열기</button>
+</div>
+
+<script>
+function redirect() {
+  const params = new URLSearchParams(window.location.search);
+  const bank = params.get('bank');
+  const account = params.get('accountNo') || params.get('account');
+  const amount = params.get('amount');
+
+  if (!bank || !account || !amount) {
+    document.getElementById('status').textContent = '❌ 송금 정보가 부족합니다.';
+    return;
+  }
+
+  document.getElementById('bank-display').textContent = bank;
+  document.getElementById('account-display').textContent = account;
+  document.getElementById('amount-display').textContent = parseInt(amount).toLocaleString();
+  document.getElementById('info').style.display = 'block';
+  document.getElementById('btn').style.display = 'inline-block';
+
+  const tossUrl = `supertoss://send?bank=${encodeURIComponent(bank)}&accountNo=${account}&amount=${amount}`;
+  window.location.href = tossUrl;
+}
+redirect();
+</script>
+</body>
+</html>
